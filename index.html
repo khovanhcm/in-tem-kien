@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>In tem kiện A5</title>
+<style>
+/* Màn hình: cột trái nhập liệu + danh sách in, cột phải xem trước tem. Khi in: chỉ in các tem A5. */
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap");
+/* Font in tem đi kèm repo (thư mục fonts/) để in được cả khi mất mạng */
+@font-face{font-family:'Barlow';font-weight:700;font-display:block;src:url(fonts/barlow-vietnamese-700-normal.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:'Barlow';font-weight:700;font-display:block;src:url(fonts/barlow-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Barlow Condensed';font-weight:700;font-display:block;src:url(fonts/barlow-condensed-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'Barlow';font-weight:800;font-display:block;src:url(fonts/barlow-vietnamese-800-normal.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:'Barlow';font-weight:800;font-display:block;src:url(fonts/barlow-latin-800-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Barlow Condensed';font-weight:800;font-display:block;src:url(fonts/barlow-condensed-latin-800-normal.woff2) format('woff2')}
+
+:root{
+  --bg:#12074f; --bg-ink:#ffffff; --bg-muted:#c9c2ee;
+  --panel:#dbd6ef; --panel2:#e8e5f5; --line:#c3bbe0; --ink:#17132e; --muted:#5a5478;
+  --accent:#22105f; --accent-ink:#ffffff; --ok:#137a43; --warn:#b4530a; --bad:#c0262d;
+  --font:"Lexend",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.5}
+.wrap{max-width:1320px;margin:0 auto;padding:18px 16px 40px;display:flex;flex-direction:column;gap:16px}
+.hero{color:var(--bg-ink)}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-muted)}
+h1{margin:0;font-size:28px;font-weight:600;line-height:1.15}
+h2{margin:0 0 10px;font-size:16px;font-weight:600}
+.stamp{font-size:13px;color:var(--bg-muted);margin-top:4px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.pill{display:inline-flex;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600}
+.pill.ok{background:#b9f0cf;color:#0d5a31}
+.pill.warn{background:#ffd8a8;color:#7a3b00}
+.pill.bad{background:#ffc9cc;color:#7d1218}
+.grid{display:grid;grid-template-columns:minmax(320px,420px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border-radius:14px;padding:16px;min-width:0}
+.f{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.f label{font-size:13px;font-weight:600}
+.f input{font:inherit;font-size:16px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px 11px;width:100%}
+.f input:focus-visible,.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.f input.big{font-size:22px;font-weight:700;letter-spacing:.02em}
+.hint{font-size:12px;color:var(--muted);min-height:18px}
+.hint.ok{color:var(--ok)} .hint.bad{color:var(--bad)}
+.found{background:var(--panel2);border-radius:9px;padding:8px 11px;font-size:13px;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin-bottom:12px}
+.found span:nth-child(odd){color:var(--muted)}
+.found b{font-weight:600}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:inherit;font-size:14px;font-weight:600;padding:9px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.25)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.msg{font-size:13px;color:var(--bg-muted);min-height:18px}
+.msg.err{color:#ffb3b8}
+table.t{width:100%;border-collapse:collapse;font-size:13px;background:var(--panel2);border-radius:10px;overflow:hidden;font-variant-numeric:tabular-nums}
+table.t th,table.t td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.t th{font-size:12px;color:var(--muted);font-weight:600}
+table.t td.n{text-align:right;white-space:nowrap}
+table.t button{font:inherit;font-size:12px;border:0;background:transparent;color:var(--bad);cursor:pointer;padding:0 4px}
+.empty{color:var(--muted);font-size:13px;padding:10px 0}
+.sum{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:10px 0}
+.preview-wrap{background:#8d86ad;border-radius:12px;padding:14px;overflow:auto}
+.preview-scale{transform-origin:top left}
+details{font-size:13px;color:var(--bg-muted)}
+details summary{cursor:pointer;font-weight:600}
+details li{margin:4px 0}
+details code{background:#24167a;color:#fff;padding:1px 5px;border-radius:4px}
+
+/* ---------- TEM A5 (bố cục theo sheet BỐ CỤC) ----------
+   Đen trắng cho máy in laser/nhiệt. Dải đen tiêu đề, chữ số dùng font hẹp đậm để to tối đa. Mọi ô canh giữa. */
+.label{width:210mm;height:148mm;padding:5mm;background:#fff;color:#000;font-family:"Barlow","Arial",sans-serif;page-break-after:always;break-after:page;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.label:last-child{page-break-after:auto;break-after:auto}
+.lb{width:100%;height:100%;display:grid;grid-template-columns:68fr 32fr;grid-template-rows:13mm 15mm 1fr 21mm;border:1.2mm solid #000;border-radius:2.5mm;overflow:hidden}
+.c{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:1mm 3mm;overflow:hidden;min-width:0;min-height:0}
+.v{font-weight:800;line-height:1.05;flex-shrink:0;word-break:break-word;max-width:100%}
+.c-loai{grid-column:1;grid-row:1;background:#000;color:#fff;border-right:.6mm solid #fff}
+.c-ngay{grid-column:2;grid-row:1;background:#000;color:#fff}
+.c-lt{grid-column:1;grid-row:2;border-bottom:.8mm solid #000;border-right:.8mm solid #000}
+.c-skcap{grid-column:2;grid-row:2;border-bottom:.8mm solid #000;background:#e6e6e6}
+.c-ma{grid-column:1;grid-row:3;border-right:.8mm solid #000;padding:0 2mm}
+.c-sk{grid-column:2;grid-row:3/5;padding:0 2mm}
+.c-ten{grid-column:1;grid-row:4;border-top:.8mm solid #000;border-right:.8mm solid #000}
+.c-loai .v{font-size:22pt;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.c-ngay .v{font-size:20pt;letter-spacing:.03em;white-space:nowrap;font-weight:700}
+.c-lt .v{font-size:24pt;white-space:nowrap;font-weight:700}
+.c-skcap .v{font-size:16pt;white-space:nowrap;letter-spacing:.18em;font-weight:800}
+.c-ma .v,.c-sk .v{font-family:"Barlow Condensed","Arial Narrow","Arial",sans-serif;font-weight:800;white-space:nowrap;line-height:.86;letter-spacing:-.01em}
+.c-ma .v{font-size:300pt}
+.c-sk .v{font-size:200pt}
+.c-sk .v .tot{font-size:.5em;font-weight:700;letter-spacing:0}
+.c-ten .v{font-size:22pt;font-weight:700;line-height:1.1}
+
+#printArea{display:none}
+@page{size:A5 landscape;margin:0}
+@media print{
+  html,body{background:#fff}
+  .wrap{display:none!important}
+  #printArea{display:block}
+  .label{margin:0}
+}
+label.btn:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Kho vận Hồ Chí Minh</div>
+    <h1>In tem kiện A5</h1>
+    <div class="stamp"><span class="pill" id="dataPill">Đang tải dữ liệu tuyến…</span><span id="dataInfo"></span><span>· Ngày in: <b id="today"></b></span></div>
+  </header>
+
+  <div class="grid">
+    <section class="card" id="nhap">
+      <h2>Nhập thông tin</h2>
+      <div class="f">
+        <label for="inMa">Mã kho</label>
+        <input id="inMa" class="big" inputmode="numeric" autocomplete="off" placeholder="VD: 1558" list="dsKho">
+        <datalist id="dsKho"></datalist>
+        <div class="hint" id="hintMa"></div>
+      </div>
+      <div class="found" id="found" hidden>
+        <span>Tên kho</span><b id="fTen"></b>
+        <span>Lộ trình</span><b id="fLt"></b>
+      </div>
+      <div class="row2">
+        <div class="f">
+          <label for="inSo">Số kiện</label>
+          <input id="inSo" class="big" type="number" min="1" max="500" step="1" inputmode="numeric" placeholder="VD: 10">
+        </div>
+        <div class="f">
+          <label for="inLoai">Loại hàng hoá</label>
+          <input id="inLoai" autocomplete="off" placeholder="VD: Điện thoại" list="dsLoai">
+          <datalist id="dsLoai"></datalist>
+        </div>
+      </div>
+      <div class="btns">
+        <button type="button" class="btn primary" id="btnPrintNow">In ngay</button>
+        <button type="button" class="btn" id="btnAdd">Thêm vào danh sách (Enter)</button>
+      </div>
+
+      <h2 style="margin-top:14px">Danh sách chờ in</h2>
+      <div class="btns" style="margin-bottom:10px">
+        <button type="button" class="btn" id="btnTemplate">Tải file Excel mẫu</button>
+        <label class="btn" id="btnImport">Nhập file Excel<input type="file" id="fileIn" accept=".xlsx,.xls,.csv" hidden></label>
+      </div>
+      <div id="queueBox"></div>
+      <div class="sum"><span id="queueSum" class="hint"></span>
+        <div class="btns">
+          <button type="button" class="btn" id="btnClear">Xoá danh sách</button>
+          <button type="button" class="btn primary" id="btnPrintAll">In tất cả</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="xem-truoc">
+      <h2>Xem trước tem (kiện đầu tiên)</h2>
+      <div class="preview-wrap" id="previewWrap"><div class="preview-scale" id="previewScale"></div></div>
+    </section>
+  </div>
+  <div class="msg" id="msg" role="status"></div>
+
+  <details id="huong-dan">
+    <summary>Cách in thẳng ra máy in, không hiện hộp thoại</summary>
+    <ul>
+      <li>Trang in khổ <b>A5 ngang</b>. Lần đầu bấm in, trong hộp thoại chọn máy in, khổ giấy A5, lề "Không có" (None), bỏ tích "Đầu trang và chân trang".</li>
+      <li>Máy in mặc định lấy theo Windows: Cài đặt → Bluetooth &amp; thiết bị → <b>Máy in &amp; máy quét</b> (Printers &amp; scanners) → chọn máy in → Đặt làm mặc định. Tắt "Để Windows quản lý máy in mặc định".</li>
+      <li>Để bỏ hẳn hộp thoại in: tạo lối tắt Chrome, chuột phải → Properties → ô Target thêm vào cuối <code>--kiosk-printing</code>, rồi mở trang bằng lối tắt đó. Mỗi lần bấm in, Chrome in thẳng ra máy in mặc định.</li>
+      <li>Nhập nhiều kho một lần: bấm "Tải file Excel mẫu", điền cột Mã kho và Số kiện (có thể thêm cột "Loại hàng hoá"), rồi bấm "Nhập file Excel". Kho không ghi loại hàng sẽ lấy theo ô Loại hàng hoá đang nhập.</li>
+      <li>Dữ liệu tuyến lấy từ file <code>tuyen.csv</code> (sheet "Tuyến Tổng hợp"). Lộ trình: nếu Hình thức vận chuyển = GNNB thì in Tên KTT phụ trách, ngược lại in "Nhất Tín".</li>
+    </ul>
+  </details>
+</div>
+
+<div id="printArea" aria-hidden="true"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const S = {kho: new Map(), queue: [], ready: false};
+const pad = (n) => String(n).padStart(2, '0');
+const today = () => { const d = new Date(); return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear(); };
+const fmt = (n) => (+n || 0).toLocaleString('vi-VN');
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* ---------- Dữ liệu tuyến ---------- */
+function parseCSV(text) {
+  const rows = []; let row = [], cur = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ',') { row.push(cur); cur = ''; }
+    else if (ch === '\n' || ch === '\r') { if (ch === '\r' && text[i + 1] === '\n') i++; row.push(cur); rows.push(row); row = []; cur = ''; }
+    else cur += ch;
+  }
+  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  return rows;
+}
+/* Lộ trình theo mục 10 sheet RULE: GNNB → Tên KTT phụ trách, ngược lại → "Nhất Tín" */
+const loTrinhOf = (ktt, ht) => String(ht || '').trim().toUpperCase() === 'GNNB' ? String(ktt || '').trim() : 'Nhất Tín';
+function loadTuyen() {
+  fetch('tuyen.csv', {cache: 'no-cache'}).then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); }).then((t) => {
+    const rows = parseCSV(t.replace(/^﻿/, ''));
+    const H = (rows.shift() || []).map((h) => h.trim().toUpperCase());
+    const ci = (n, d) => { const i = H.indexOf(n); return i < 0 ? d : i; };
+    const iMa = ci('MA_KHO', 0), iTen = ci('TEN_KHO', 1), iKtt = ci('TEN_KTT_PHU_TRACH', 2), iHt = ci('HINH_THUC_VAN_CHUYEN', 3);
+    S.kho.clear();
+    for (const r of rows) { const ma = String(r[iMa] || '').trim(); if (ma && !S.kho.has(ma)) S.kho.set(ma, {ma, ten: (r[iTen] || '').trim(), lt: loTrinhOf(r[iKtt], r[iHt])}); }
+    if (!S.kho.size) throw new Error('file trống');
+    S.ready = true;
+    $('dataPill').className = 'pill ok'; $('dataPill').textContent = 'Dữ liệu tuyến sẵn sàng';
+    $('dataInfo').textContent = fmt(S.kho.size) + ' mã kho';
+    const dl = $('dsKho'); dl.replaceChildren();
+    for (const k of S.kho.values()) { const o = document.createElement('option'); o.value = k.ma; o.label = k.ten; dl.appendChild(o); }
+    lookup();
+  }).catch((e) => {
+    $('dataPill').className = 'pill bad'; $('dataPill').textContent = 'Chưa tải được dữ liệu tuyến';
+    say('Không đọc được file tuyen.csv (' + (e && e.message || 'lỗi') + '). Mở trang qua link GitHub Pages, hoặc báo ADM kiểm tra file tuyen.csv trong repo.', true);
+  });
+}
+
+/* ---------- Nhập liệu ---------- */
+function say(t, err) { const m = $('msg'); m.textContent = t || ''; m.className = 'msg' + (err ? ' err' : ''); }
+function current() {
+  const ma = $('inMa').value.trim().replace(/\s+/g, '');
+  const so = Math.floor(+$('inSo').value || 0);
+  const loai = $('inLoai').value.trim();
+  return {ma, so, loai, kho: S.kho.get(ma) || null};
+}
+function lookup() {
+  const c = current(), h = $('hintMa');
+  if (!c.ma) { h.textContent = ''; h.className = 'hint'; $('found').hidden = true; }
+  else if (!S.ready) { h.textContent = 'Đang tải dữ liệu tuyến…'; h.className = 'hint'; $('found').hidden = true; }
+  else if (!c.kho) { h.textContent = 'Không tìm thấy mã kho ' + c.ma + ' trong dữ liệu tuyến.'; h.className = 'hint bad'; $('found').hidden = true; }
+  else { h.textContent = 'Đã tìm thấy mã kho.'; h.className = 'hint ok'; $('found').hidden = false; $('fTen').textContent = c.kho.ten; $('fLt').textContent = c.kho.lt; }
+  renderPreview();
+}
+function validate(c) {
+  if (!S.ready) return 'Dữ liệu tuyến chưa tải xong.';
+  if (!c.ma) return 'Nhập mã kho.';
+  if (!c.kho) return 'Mã kho ' + c.ma + ' không có trong dữ liệu tuyến.';
+  if (!(c.so >= 1)) return 'Nhập số kiện (từ 1 trở lên).';
+  if (c.so > 500) return 'Số kiện tối đa 500 cho một lần in.';
+  return '';
+}
+function rememberLoai(loai) {
+  if (!loai) return;
+  const list = store.get('tk-loai', []).filter((x) => x !== loai); list.unshift(loai);
+  store.set('tk-loai', list.slice(0, 20)); fillLoai();
+}
+function fillLoai() {
+  const dl = $('dsLoai'); dl.replaceChildren();
+  store.get('tk-loai', []).forEach((x) => { const o = document.createElement('option'); o.value = x; dl.appendChild(o); });
+}
+function job(c) { return {ma: c.kho.ma, ten: c.kho.ten, lt: c.kho.lt, so: c.so, loai: c.loai}; }
+function resetInputs() { $('inMa').value = ''; $('inSo').value = ''; lookup(); $('inMa').focus(); }
+
+/* ---------- Danh sách ---------- */
+function renderQueue() {
+  const box = $('queueBox'); box.replaceChildren();
+  if (!S.queue.length) { const p = document.createElement('p'); p.className = 'empty'; p.textContent = 'Chưa có kho nào. Nhập mã kho, số kiện rồi bấm Enter để thêm.'; box.appendChild(p); }
+  else {
+    const t = document.createElement('table'); t.className = 't';
+    t.innerHTML = '<thead><tr><th>#</th><th>Mã kho</th><th>Tên kho / Lộ trình</th><th>Loại hàng</th><th class="n">Kiện</th><th></th></tr></thead>';
+    const tb = document.createElement('tbody');
+    S.queue.forEach((j, i) => {
+      const tr = document.createElement('tr');
+      const cells = [String(i + 1), j.ma, '', j.loai || '—', fmt(j.so)];
+      cells.forEach((v, k) => { const td = document.createElement('td'); if (k === 4) td.className = 'n'; if (k === 2) { const b = document.createElement('div'); b.textContent = j.ten; const s = document.createElement('div'); s.textContent = j.lt; s.style.color = 'var(--muted)'; s.style.fontSize = '12px'; td.append(b, s); } else td.textContent = v; tr.appendChild(td); });
+      const td = document.createElement('td'); const x = document.createElement('button'); x.type = 'button'; x.textContent = 'Xoá'; x.setAttribute('aria-label', 'Xoá dòng ' + (i + 1));
+      x.addEventListener('click', () => { S.queue.splice(i, 1); saveQueue(); renderQueue(); }); td.appendChild(x); tr.appendChild(td);
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb); box.appendChild(t);
+  }
+  const pages = S.queue.reduce((s, j) => s + j.so, 0);
+  $('queueSum').textContent = S.queue.length ? fmt(S.queue.length) + ' kho · ' + fmt(pages) + ' tem' : '';
+  $('btnPrintAll').disabled = !S.queue.length; $('btnClear').disabled = !S.queue.length;
+}
+function saveQueue() { store.set('tk-queue', S.queue); }
+
+/* ---------- Tem ---------- */
+function labelEl(j, i) {
+  const L = document.createElement('div'); L.className = 'label';
+  const g = document.createElement('div'); g.className = 'lb'; L.appendChild(g);
+  const cell = (cls, cap, val) => { const c = document.createElement('div'); c.className = 'c ' + cls; if (cap) { const s = document.createElement('div'); s.className = 'cap'; s.textContent = cap; c.appendChild(s); } const v = document.createElement('div'); v.className = 'v'; v.textContent = val; c.appendChild(v); g.appendChild(c); return v; };
+  /* Tem chỉ in giá trị, không in nhãn mục */
+  cell('c-loai', '', j.loai || ' ');
+  cell('c-ngay', '', today());
+  cell('c-lt', '', j.lt);
+  cell('c-skcap', '', 'SỐ KIỆN');
+  cell('c-ma', '', j.ma);
+  /* Số kiện: N từ 2 chữ số trở lên thì xếp 2 dòng (i / N) để chữ được to hơn trong cột hẹp */
+  /* Số kiện một dòng: số thứ tự to, "/tổng" nhỏ hơn */
+  const sk = cell('c-sk', '', ''), tot = document.createElement('span');
+  tot.className = 'tot'; tot.textContent = '/' + j.so; sk.append(String(i), tot);
+  cell('c-ten', '', j.ten);
+  return L;
+}
+/* Thu nhỏ chữ cho vừa ô (tên kho dài, mã kho nhiều số) */
+function fitAll(root) {
+  root.querySelectorAll('.v').forEach((v) => {
+    const box = v.parentElement, cs = getComputedStyle(box);
+    const room = () => box.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - (v.previousElementSibling ? v.previousElementSibling.offsetHeight : 0);
+    const roomW = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    let size = parseFloat(getComputedStyle(v).fontSize), n = 0;
+    while (n++ < 60 && size > 8 && (v.scrollWidth > roomW + 2 || v.offsetHeight > room() - 4)) { size *= 0.93; v.style.fontSize = size + 'px'; }
+  });
+}
+function renderPreview() {
+  const c = current(), sc = $('previewScale'); sc.replaceChildren();
+  const j = c.kho ? job(Object.assign({}, c, {so: c.so >= 1 ? c.so : 1})) : {ma: c.ma || '—', ten: '—', lt: '—', so: c.so >= 1 ? c.so : 1, loai: c.loai};
+  const L = labelEl(j, 1); sc.appendChild(L); fitAll(L);
+  if (document.fonts && document.fonts.status !== 'loaded') document.fonts.ready.then(() => { if (L.isConnected) { L.querySelectorAll('.v').forEach((v) => { v.style.fontSize = ''; }); fitAll(L); } });
+  const wrapW = $('previewWrap').clientWidth - 28, w = L.offsetWidth, h = L.offsetHeight, k = Math.min(1, wrapW / w);
+  sc.style.transform = 'scale(' + k + ')'; sc.style.width = w + 'px'; sc.style.height = (h * k) + 'px';
+}
+function printJobs(jobs) {
+  const area = $('printArea'); area.replaceChildren();
+  jobs.forEach((j) => { for (let i = 1; i <= j.so; i++) area.appendChild(labelEl(j, i)); });
+  const total = jobs.reduce((s, j) => s + j.so, 0);
+  const go = () => { area.style.display = 'block'; fitAll(area); area.style.display = ''; setTimeout(() => { window.print(); }, 50); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(go, go); else go();
+  return total;
+}
+
+/* ---------- File Excel mẫu: Mã kho | Số kiện ---------- */
+function downloadTemplate() {
+  if (!window.XLSX) { say('Chưa tải được thư viện Excel. Kiểm tra mạng rồi tải lại trang.', true); return; }
+  const ws = XLSX.utils.aoa_to_sheet([['Mã kho', 'Số kiện']]);
+  ws['!cols'] = [{wch: 14}, {wch: 10}];
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Danh sach in');
+  XLSX.writeFile(wb, 'Mau_in_tem_kien.xlsx');
+  say('Đã tải file mẫu Mau_in_tem_kien.xlsx: điền Mã kho và Số kiện rồi bấm "Nhập file Excel".');
+}
+const nrm = (x) => String(x == null ? '' : x).trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/\s+/g, ' ');
+function importFile(file) {
+  if (!file) return;
+  if (!S.ready) { say('Dữ liệu tuyến chưa tải xong, thử lại sau giây lát.', true); return; }
+  file.arrayBuffer().then((buf) => {
+    const wb = XLSX.read(buf, {type: 'array'});
+    const aoa = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header: 1, raw: false, defval: ''});
+    /* Tìm dòng tiêu đề có "mã kho" / "kho" và "số kiện" / "kiện"; không có thì lấy cột 1 = mã kho, cột 2 = số kiện */
+    let hi = -1, cMa = 0, cSo = 1, cLoai = -1;
+    for (let r = 0; r < Math.min(aoa.length, 15); r++) {
+      const row = aoa[r].map(nrm);
+      const a = row.findIndex((x) => x.includes('ma kho') || x === 'kho' || x.includes('ma sieu thi'));
+      const b = row.findIndex((x) => x.includes('kien') || x.includes('so luong'));
+      if (a >= 0 && b >= 0) { hi = r; cMa = a; cSo = b; cLoai = row.findIndex((x) => x.includes('loai hang')); break; }
+    }
+    const loaiChung = $('inLoai').value.trim();
+    const added = [], miss = [], bad = [];
+    for (let r = hi + 1; r < aoa.length; r++) {
+      const row = aoa[r] || [], ma = String(row[cMa] || '').trim().replace(/\s+/g, '').replace(/\.0+$/, '');
+      if (!ma) continue;
+      const so = Math.floor(+String(row[cSo] || '').replace(/[^\d.]/g, '') || 0), k = S.kho.get(ma);
+      if (!k) { miss.push(ma); continue; }
+      if (!(so >= 1) || so > 500) { bad.push(ma); continue; }
+      const loai = cLoai >= 0 && String(row[cLoai] || '').trim() ? String(row[cLoai]).trim() : loaiChung;
+      added.push({ma: k.ma, ten: k.ten, lt: k.lt, so, loai});
+    }
+    S.queue.push(...added); saveQueue(); renderQueue();
+    const tem = added.reduce((s, j) => s + j.so, 0);
+    let t = 'Đã nhập ' + fmt(added.length) + ' kho · ' + fmt(tem) + ' tem từ ' + file.name + '.';
+    if (miss.length) t += ' Không tìm thấy ' + fmt(miss.length) + ' mã kho: ' + miss.slice(0, 10).join(', ') + (miss.length > 10 ? '…' : '') + '.';
+    if (bad.length) t += ' Bỏ qua ' + fmt(bad.length) + ' dòng số kiện không hợp lệ: ' + bad.slice(0, 10).join(', ') + '.';
+    say(t, !added.length);
+  }).catch(() => say('Không đọc được file. Dùng file Excel theo mẫu (cột Mã kho, Số kiện).', true));
+}
+
+/* ---------- Sự kiện ---------- */
+$('btnTemplate').addEventListener('click', downloadTemplate);
+$('fileIn').addEventListener('change', (e) => { importFile(e.target.files[0]); e.target.value = ''; });
+$('inMa').addEventListener('input', lookup);
+$('inSo').addEventListener('input', renderPreview);
+$('inLoai').addEventListener('input', () => { store.set('tk-loai-last', $('inLoai').value); renderPreview(); });
+function addCurrent() {
+  const c = current(), err = validate(c);
+  if (err) { say(err, true); return false; }
+  S.queue.push(job(c)); saveQueue(); rememberLoai(c.loai); renderQueue();
+  say('Đã thêm ' + c.kho.ma + ' · ' + fmt(c.so) + ' kiện vào danh sách.'); resetInputs(); return true;
+}
+['inMa', 'inSo', 'inLoai'].forEach((id) => $(id).addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return; e.preventDefault();
+  if (id === 'inMa' && current().kho && !$('inSo').value) { $('inSo').focus(); return; }
+  addCurrent();
+}));
+$('btnAdd').addEventListener('click', addCurrent);
+$('btnPrintNow').addEventListener('click', () => {
+  const c = current(), err = validate(c);
+  if (err) { say(err, true); return; }
+  rememberLoai(c.loai);
+  const n = printJobs([job(c)]);
+  say('Đã gửi lệnh in ' + fmt(n) + ' tem cho kho ' + c.kho.ma + '.'); resetInputs();
+});
+$('btnPrintAll').addEventListener('click', () => {
+  if (!S.queue.length) return;
+  const n = printJobs(S.queue);
+  say('Đã gửi lệnh in ' + fmt(n) + ' tem cho ' + fmt(S.queue.length) + ' kho. Bấm "Xoá danh sách" sau khi in xong.');
+});
+$('btnClear').addEventListener('click', () => { S.queue = []; saveQueue(); renderQueue(); say('Đã xoá danh sách.'); });
+window.addEventListener('afterprint', () => { $('printArea').replaceChildren(); });
+let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(renderPreview, 120); });
+
+/* ---------- Khởi động ---------- */
+$('today').textContent = today();
+$('inLoai').value = store.get('tk-loai-last', '');
+S.queue = store.get('tk-queue', []).filter((j) => j && j.ma && j.so >= 1);
+fillLoai(); renderQueue(); renderPreview(); loadTuyen(); $('inMa').focus();
+</script>
+</body>
+</html>
